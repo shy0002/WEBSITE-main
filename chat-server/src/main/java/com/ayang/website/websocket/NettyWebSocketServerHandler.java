@@ -3,17 +3,21 @@ package com.ayang.website.websocket;
 import cn.hutool.json.JSONUtil;
 import com.ayang.website.websocket.domain.enums.WebsocketReqTypeEnum;
 import com.ayang.website.websocket.domain.vo.req.WebsocketBaseReq;
+import io.netty.channel.ChannelHandler.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author shy
  * @date 2023/12/4
  */
+@Slf4j
+@Sharable
 public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     @Override
@@ -25,7 +29,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
             if (event.state() == IdleState.READER_IDLE){
                 System.out.println("读空闲");
                 // TODO 用户下线
-                ctx.close();
+                ctx.channel().close();
             }
         }
     }
