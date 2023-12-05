@@ -25,7 +25,7 @@ public class SubscribeHandler extends AbstractHandler {
                                     WxSessionManager sessionManager) throws WxErrorException {
 
         this.logger.info("新关注用户 OPENID: " + wxMessage.getFromUser());
-
+        // TODO qrscene_1
         WxMpXmlOutMessage responseResult = null;
         try {
 //            responseResult = this.handleSpecial(weixinService, wxMessage);
