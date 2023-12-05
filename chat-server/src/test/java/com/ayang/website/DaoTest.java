@@ -1,7 +1,9 @@
 package com.ayang.website;
 
-import com.ayang.website.user.dao.UserDao;
-import com.ayang.website.user.domain.entity.User;
+
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ import java.util.List;
 public class DaoTest {
 
     @Autowired
-    private UserDao userDao;
+    private WxMpService wxMpService;
 
     @Test
-    public void test(){
-        List<User> list = userDao.list();
+    public void test() throws WxErrorException {
+        WxMpQrCodeTicket wxMpQrCodeTicket = wxMpService.getQrcodeService().qrCodeCreateTmpTicket(1, 10000);
+        String url = wxMpQrCodeTicket.getUrl();
+        System.out.println(url);
     }
 }
