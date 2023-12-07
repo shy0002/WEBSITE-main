@@ -60,7 +60,10 @@ public class WxPortalController {
     }
 
     @GetMapping("/callBack")
-    public RedirectView callBack(@RequestParam String code) {
+    public RedirectView callBack(@RequestParam String code) throws WxErrorException {
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        WxOAuth2UserInfo zhCn = wxMpService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
+        System.out.println(zhCn);
         return null;
     }
 

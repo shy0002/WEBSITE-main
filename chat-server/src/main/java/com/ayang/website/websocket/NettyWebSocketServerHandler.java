@@ -1,8 +1,10 @@
 package com.ayang.website.websocket;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.ayang.website.websocket.domain.enums.WebsocketReqTypeEnum;
 import com.ayang.website.websocket.domain.vo.req.WebsocketBaseReq;
+import com.ayang.website.websocket.service.WebsocketService;
 import io.netty.channel.ChannelHandler.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,6 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Sharable
 public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+
+    private WebsocketService websocketService;
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        websocketService = SpringUtil.getBean(WebsocketService.class);
+        websocketService.connect(ctx.channel());
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
