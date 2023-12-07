@@ -11,13 +11,13 @@ public interface WebsocketService {
 
     /**
      * 新增连接
-     * @param channel
      */
     void connect(Channel channel);
 
     /**
      * 登录认证
-     * @param channel
      */
     void hanlerLoginReq(Channel channel);
+
+    void remove(Channel channel);
 }
