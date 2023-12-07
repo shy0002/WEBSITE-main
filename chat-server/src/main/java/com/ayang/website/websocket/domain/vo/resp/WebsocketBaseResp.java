@@ -1,9 +1,12 @@
 package com.ayang.website.websocket.domain.vo.resp;
 
+import lombok.Data;
+
 /**
  * @author shy
  * @date 2023/12/5
  */
+@Data
 public class WebsocketBaseResp<T> {
 
     /**

@@ -45,12 +45,12 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
         String text = msg.text();
         WebsocketBaseReq wsBaseReq = JSONUtil.toBean(text, WebsocketBaseReq.class);
         switch (WebsocketReqTypeEnum.of(wsBaseReq.getType())) {
             case LOGIN:
-                System.out.println("请求二维码");
+                websocketService.hanlerLoginReq(ctx.channel());
                 break;
             case HEARTBEAT:
                 break;

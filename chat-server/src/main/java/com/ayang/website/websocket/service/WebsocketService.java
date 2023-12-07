@@ -14,4 +14,10 @@ public interface WebsocketService {
      * @param channel
      */
     void connect(Channel channel);
+
+    /**
+     * 登录认证
+     * @param channel
+     */
+    void hanlerLoginReq(Channel channel);
 }
