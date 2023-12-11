@@ -6,14 +6,15 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
 
 /**
- * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ * @author shy
+ * @date 2023/12/8
+ * @description TextBuilder
  */
 public class TextBuilder {
 
     public static WxMpXmlOutMessage build(String content, WxMpXmlMessage wxMessage) {
-        WxMpXmlOutTextMessage m = WxMpXmlOutMessage.TEXT().content(content)
+        return WxMpXmlOutMessage.TEXT().content(content)
                 .fromUser(wxMessage.getToUser()).toUser(wxMessage.getFromUser())
                 .build();
-        return m;
     }
 }

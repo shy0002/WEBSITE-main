@@ -39,8 +39,6 @@ public class SubscribeHandler extends AbstractHandler {
         if (responseResult != null) {
             return responseResult;
         }
-
-
         return TextBuilder.build("感谢关注", wxMessage);
     }
 

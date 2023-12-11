@@ -17,5 +17,4 @@ public class WebsocketAdapter {
         resp.setDate(new WebsocketLoginUrl(wxMpQrCodeTicket.getUrl()));
         return resp;
     }
-
 }
