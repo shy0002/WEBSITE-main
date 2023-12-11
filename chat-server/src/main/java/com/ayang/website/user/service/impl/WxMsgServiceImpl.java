@@ -14,6 +14,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -38,6 +39,7 @@ public class WxMsgServiceImpl implements WxMsgService {
     @Autowired
     private UserService userService;
     @Autowired
+    @Lazy
     private WxMpService wxMpService;
 
 
@@ -50,13 +52,13 @@ public class WxMsgServiceImpl implements WxMsgService {
         }
         User user = userDao.getByOpenId(openId);
         boolean registered = Objects.nonNull(user);
-        boolean authorized = StringUtils.isNotBlank(user.getAvatar());
+        boolean authorized = registered && StringUtils.isNotBlank(user.getAvatar());
         // 用户已经注册并授权
         if (registered && authorized){
             // todo 走登录成功逻辑 通过code找到channel，然后给channel推送消息
             return null;
         }
-        // 用户未注册先给用户注册
+        // 用户未注册，先注册
         if (!registered){
             User insert = UserAdapter.buildUserSave(openId);
             userService.register(insert);
@@ -65,7 +67,6 @@ public class WxMsgServiceImpl implements WxMsgService {
         // 推送链接让用户授权
         String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "/wx/portal/public/callBack"));
         return TextBuilder.build("请点击登录：<a href=\"" + authorizeUrl + "\">登录</a>"  ,wxMpXmlMessage);
-        return null;
     }
 
     private Integer getEventKey(WxMpXmlMessage wxMpXmlMessage) {

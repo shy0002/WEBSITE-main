@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
  * @author shy
  * @since 2023-12-05
  */
-@Service
 public interface UserService{
 
     Long register(User insert);

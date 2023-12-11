@@ -4,6 +4,7 @@ import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2023/12/11
  * @description UserServiceImpl
  */
+@Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
