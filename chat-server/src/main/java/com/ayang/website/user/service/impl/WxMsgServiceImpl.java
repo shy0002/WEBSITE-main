@@ -9,6 +9,7 @@ import com.ayang.website.user.service.adapter.TextBuilder;
 import com.ayang.website.user.service.adapter.UserAdapter;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
@@ -67,6 +68,11 @@ public class WxMsgServiceImpl implements WxMsgService {
         // 推送链接让用户授权
         String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "/wx/portal/public/callBack"));
         return TextBuilder.build("请点击登录：<a href=\"" + authorizeUrl + "\">登录</a>"  ,wxMpXmlMessage);
+    }
+
+    @Override
+    public void authorize(WxOAuth2UserInfo userInfo) {
+        // todo 用户授权
     }
 
     private Integer getEventKey(WxMpXmlMessage wxMpXmlMessage) {

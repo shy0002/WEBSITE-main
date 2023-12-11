@@ -1,5 +1,6 @@
 package com.ayang.website.user.controller;
 
+import com.ayang.website.user.service.WxMsgService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
@@ -29,6 +30,14 @@ public class WxPortalController {
 
     @Autowired
     private WxMpService wxMpService;
+    @Autowired
+    private WxMpService wxService;
+    @Autowired
+    private WxMpMessageRouter messageRouter;
+    @Autowired
+    private WxMsgService wxMsgService;
+
+
     @GetMapping("/test")
     public String getQrCode() throws WxErrorException {
         WxMpQrCodeTicket wxMpQrCodeTicket = wxMpService.getQrcodeService().qrCodeCreateTmpTicket(1, 10000);
@@ -36,8 +45,7 @@ public class WxPortalController {
         System.out.println(url);
         return url;
     }
-    private final WxMpService wxService;
-    private final WxMpMessageRouter messageRouter;
+
 
     @GetMapping(produces = "text/plain;charset=utf-8")
     public String authGet(@RequestParam(name = "signature", required = false) String signature,
@@ -62,9 +70,10 @@ public class WxPortalController {
     @GetMapping("/callBack")
     public RedirectView callBack(@RequestParam String code) throws WxErrorException {
         WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
-        WxOAuth2UserInfo zhCn = wxMpService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
-        System.out.println(zhCn);
-        return null;
+        WxOAuth2UserInfo userInfo = wxMpService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
+        wxMsgService.authorize(userInfo);
+        RedirectView redirectView = new RedirectView("www.baidu.com");
+        return redirectView;
     }
 
     @PostMapping(produces = "application/xml; charset=UTF-8")
