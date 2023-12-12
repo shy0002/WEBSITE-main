@@ -20,4 +20,8 @@ public interface WebsocketService {
     void hanlerLoginReq(Channel channel);
 
     void remove(Channel channel);
+
+    void scanLoginSussecc(Integer code, Long id);
+
+    void waitAuthorize(Integer code);
 }

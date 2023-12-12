@@ -72,7 +72,7 @@ public class WxPortalController {
         WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
         WxOAuth2UserInfo userInfo = wxMpService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
         wxMsgService.authorize(userInfo);
-        RedirectView redirectView = new RedirectView("www.baidu.com");
+        RedirectView redirectView = new RedirectView("https://www.baidu.com/");
         return redirectView;
     }
 

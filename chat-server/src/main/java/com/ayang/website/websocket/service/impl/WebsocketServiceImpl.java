@@ -2,10 +2,11 @@ package com.ayang.website.websocket.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
+import com.ayang.website.token.service.LoginService;
+import com.ayang.website.user.dao.UserDao;
+import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.websocket.domain.dto.WebsocketChannelExtraDTO;
-import com.ayang.website.websocket.domain.enums.WebsocketRespTypeEnum;
 import com.ayang.website.websocket.domain.vo.resp.WebsocketBaseResp;
-import com.ayang.website.websocket.domain.vo.resp.WebsocketLoginUrl;
 import com.ayang.website.websocket.service.WebsocketService;
 import com.ayang.website.websocket.service.adapter.WebsocketAdapter;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -16,6 +17,7 @@ import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -30,7 +32,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class WebsocketServiceImpl implements WebsocketService {
     @Autowired
+    @Lazy
     private WxMpService wxMpService;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private LoginService loginService;
     /**
      * 在线用户连接管理(包括登录态/游客)
      */
@@ -66,6 +73,31 @@ public class WebsocketServiceImpl implements WebsocketService {
     public void remove(Channel channel) {
         ONLINE_WS_MAP.remove(channel);
         // todo 用户下线
+    }
+
+    @Override
+    public void scanLoginSussecc(Integer code, Long uid) {
+        // 确认连接在机器上
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(code);
+        if (Objects.isNull(channel)){
+            return;
+        }
+        User user = userDao.getById(uid);
+        // 移除code
+        WAIT_LOGIN_MAP.invalidate(code);
+        // 调用登录模块获取token
+        String token = loginService.login(uid);
+        // 用户登录
+        sendMsg(channel, WebsocketAdapter.buildResp(user, token));
+    }
+
+    @Override
+    public void waitAuthorize(Integer code) {
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(code);
+        if (Objects.isNull(channel)){
+            return;
+        }
+        sendMsg(channel, WebsocketAdapter.buildWaitAuthorizeResp());
     }
 
     private void sendMsg(Channel channel, WebsocketBaseResp<?> resp) {
