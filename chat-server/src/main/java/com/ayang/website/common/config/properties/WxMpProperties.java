@@ -1,4 +1,4 @@
-package com.ayang.website.config.properties;
+package com.ayang.website.common.config.properties;
 
 import cn.hutool.json.JSONUtil;
 import lombok.Data;

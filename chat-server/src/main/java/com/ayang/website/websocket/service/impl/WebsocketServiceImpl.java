@@ -2,7 +2,7 @@ package com.ayang.website.websocket.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
-import com.ayang.website.token.service.LoginService;
+import com.ayang.website.user.service.LoginService;
 import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.websocket.domain.dto.WebsocketChannelExtraDTO;

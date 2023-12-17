@@ -44,6 +44,7 @@
         <jsoup.version>1.15.3</jsoup.version>
         <okhttp.version>4.8.1</okhttp.version>
         <redisson-spring-boot-starter.version>3.17.1</redisson-spring-boot-starter.version>
+        <jwt.version>3.19.0</jwt.version>
     </properties>
 
     <dependencyManagement>
@@ -122,6 +123,12 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson-spring-boot-starter.version}</version>
+            </dependency>
+            <!-- jwt -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${jwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

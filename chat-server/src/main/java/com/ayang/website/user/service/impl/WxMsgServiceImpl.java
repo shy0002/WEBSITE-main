@@ -1,8 +1,5 @@
 package com.ayang.website.user.service.impl;
 
-import cn.hutool.core.util.StrUtil;
-import com.ayang.website.token.service.LoginService;
-import com.ayang.website.token.service.impl.LoginServiceImpl;
 import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.user.service.UserService;
@@ -19,7 +16,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;

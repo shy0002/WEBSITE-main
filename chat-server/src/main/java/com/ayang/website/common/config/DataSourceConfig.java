@@ -1,4 +1,4 @@
-package com.ayang.website.config;
+package com.ayang.website.common.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;

@@ -33,3 +33,5 @@ wx:
         secret: ${chat.wx.secret} # 公众号的appsecret
         token: ${chat.wx.token} # 接口配置里的Token值
         aesKey: ${chat.wx.aesKey} # 接口配置里的EncodingAESKey值
+jwt:
+  secret: ${chat.jwt.secret}

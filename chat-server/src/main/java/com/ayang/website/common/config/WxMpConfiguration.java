@@ -1,7 +1,7 @@
-package com.ayang.website.config;
+package com.ayang.website.common.config;
 
 
-import com.ayang.website.config.properties.WxMpProperties;
+import com.ayang.website.common.config.properties.WxMpProperties;
 import com.ayang.website.user.service.handler.LogHandler;
 import com.ayang.website.user.service.handler.MsgHandler;
 import com.ayang.website.user.service.handler.ScanHandler;
@@ -26,7 +26,7 @@ import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
 /**
  * @author shy
  * @date 2023/12/5
- * @description WeChat mp configuration
+ * @description WxMpConfiguration
  */
 @AllArgsConstructor
 @Configuration
