@@ -13,7 +13,10 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author shy
@@ -38,13 +41,16 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete){
-            System.out.println("握手完成");
-        }else if (evt instanceof IdleStateEvent){
+        if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
+            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            if (StringUtils.isNotBlank(token)) {
+                websocketService.authorize(ctx.channel(), token);
+            }
+        } else if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
-            if (event.state() == IdleState.READER_IDLE){
+            if (event.state() == IdleState.READER_IDLE) {
                 System.out.println("读空闲");
-                // TODO 用户下线
+                // 用户下线
                 userOffline(ctx.channel());
             }
         }
@@ -53,7 +59,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     /**
      * 用户下线统一处理
      */
-    private void userOffline(Channel channel){
+    private void userOffline(Channel channel) {
         websocketService.remove(channel);
         channel.close();
     }
@@ -64,11 +70,12 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         WebsocketBaseReq wsBaseReq = JSONUtil.toBean(text, WebsocketBaseReq.class);
         switch (WebsocketReqTypeEnum.of(wsBaseReq.getType())) {
             case LOGIN:
-                websocketService.hanlerLoginReq(ctx.channel());
+                websocketService.handlerLoginReq(ctx.channel());
                 break;
             case HEARTBEAT:
                 break;
             case AUTHORIZE:
+                websocketService.authorize(ctx.channel(), wsBaseReq.getDate());
                 break;
             default:
                 break;

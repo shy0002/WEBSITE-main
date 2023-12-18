@@ -1,7 +1,6 @@
 package com.ayang.website;
 
 
-import com.ayang.website.common.utils.JwtUtils;
 import com.ayang.website.common.utils.RedisUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -11,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 /**
  * @author shy

@@ -65,7 +65,7 @@ public class WxMsgServiceImpl implements WxMsgService {
         // 用户已经注册并授权
         if (registered && authorized){
             // todo 走登录成功逻辑 通过code找到channel，然后给channel推送消息
-            websocketService.scanLoginSussecc(code, user.getId());
+            websocketService.scanLoginSuccess(code, user.getId());
             return null;
         }
         // 用户未注册，先注册
@@ -90,7 +90,7 @@ public class WxMsgServiceImpl implements WxMsgService {
         }
         // 通过code找到用户的channel进行登录
         Integer code = WAIT_AUTHORIZE_MAP.remove(openid);
-        websocketService.scanLoginSussecc(code, user.getId());
+        websocketService.scanLoginSuccess(code, user.getId());
 
 
     }

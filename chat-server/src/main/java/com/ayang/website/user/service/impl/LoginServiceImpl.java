@@ -4,6 +4,7 @@ import com.ayang.website.common.constant.RedisKey;
 import com.ayang.website.common.utils.JwtUtils;
 import com.ayang.website.common.utils.RedisUtils;
 import com.ayang.website.user.service.LoginService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LoginServiceImpl implements LoginService {
     public static final int TOKEN_EXPIRE_DAYS = 3;
-    public static final int TOKEN_RENEWAL_DAYS = 1;
-    public static final int TOKEN_EXPIRE_NULL = -2;
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -30,15 +29,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void renewalTokenIfNecessary(String token) {
-        Long uid = getValidUid(token);
-        String userTokenKey = getUserToken(uid);
-        Long expireDays = RedisUtils.getExpire(userTokenKey, TimeUnit.DAYS);
-        if (expireDays == TOKEN_EXPIRE_NULL) {
-            return;
-        }
-        if (expireDays < TOKEN_RENEWAL_DAYS) {
-            RedisUtils.expire(getUserToken(uid), TOKEN_EXPIRE_DAYS, TimeUnit.DAYS);
-        }
 
     }
 
@@ -59,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
         if (Objects.isNull(uid)) {
             return null;
         }
-        String oldToken = RedisUtils.get(getUserToken(uid));
+        String oldToken = RedisUtils.getStr(getUserToken(uid));
         return Objects.equals(token, oldToken) ? uid : null;
     }
 }

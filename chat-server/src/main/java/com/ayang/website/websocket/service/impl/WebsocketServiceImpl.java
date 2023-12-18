@@ -41,7 +41,7 @@ public class WebsocketServiceImpl implements WebsocketService {
     /**
      * 在线用户连接管理(包括登录态/游客)
      */
-    private static final ConcurrentHashMap<Channel, WebsocketChannelExtraDTO> ONLINE_WS_MAP= new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Channel, WebsocketChannelExtraDTO> ONLINE_WS_MAP = new ConcurrentHashMap<>();
 
     public static final Duration DURATION = Duration.ofHours(1);
     public static final int MAXIMUM_SIZE = 10000;
@@ -60,7 +60,7 @@ public class WebsocketServiceImpl implements WebsocketService {
 
     @SneakyThrows
     @Override
-    public void hanlerLoginReq(Channel channel) {
+    public void handlerLoginReq(Channel channel) {
         // 生成随机码
         Integer code = generateLoginCode(channel);
         // 找微信申请带参二维码
@@ -76,10 +76,10 @@ public class WebsocketServiceImpl implements WebsocketService {
     }
 
     @Override
-    public void scanLoginSussecc(Integer code, Long uid) {
+    public void scanLoginSuccess(Integer code, Long uid) {
         // 确认连接在机器上
         Channel channel = WAIT_LOGIN_MAP.getIfPresent(code);
-        if (Objects.isNull(channel)){
+        if (Objects.isNull(channel)) {
             return;
         }
         User user = userDao.getById(uid);
@@ -88,16 +88,37 @@ public class WebsocketServiceImpl implements WebsocketService {
         // 调用登录模块获取token
         String token = loginService.login(uid);
         // 用户登录
-        sendMsg(channel, WebsocketAdapter.buildResp(user, token));
+        loginSuccess(channel, user, token);
     }
 
     @Override
     public void waitAuthorize(Integer code) {
         Channel channel = WAIT_LOGIN_MAP.getIfPresent(code);
-        if (Objects.isNull(channel)){
+        if (Objects.isNull(channel)) {
             return;
         }
         sendMsg(channel, WebsocketAdapter.buildWaitAuthorizeResp());
+    }
+
+    @Override
+    public void authorize(Channel channel, String token) {
+        Long uid = loginService.getValidUid(token);
+        if (Objects.nonNull(uid)) {
+            User user = userDao.getById(uid);
+            loginSuccess(channel, user, token);
+        } else {
+            sendMsg(channel, WebsocketAdapter.buildInvalidTokenResp());
+        }
+    }
+
+    private void loginSuccess(Channel channel, User user, String token) {
+        // 更新channel对应的用户信息
+        WebsocketChannelExtraDTO websocketChannelExtraDTO = ONLINE_WS_MAP.get(channel);
+        websocketChannelExtraDTO.setUid(user.getId());
+        // todo 用户上线成功的事件
+        // 推送用户登录成功的消息
+        sendMsg(channel, WebsocketAdapter.buildResp(user, token));
+
     }
 
     private void sendMsg(Channel channel, WebsocketBaseResp<?> resp) {
@@ -108,7 +129,7 @@ public class WebsocketServiceImpl implements WebsocketService {
         Integer code;
         do {
             code = RandomUtil.randomInt(Integer.MAX_VALUE);
-        }while (Objects.nonNull(WAIT_LOGIN_MAP.asMap().putIfAbsent(code, channel)));
+        } while (Objects.nonNull(WAIT_LOGIN_MAP.asMap().putIfAbsent(code, channel)));
         return code;
     }
 }

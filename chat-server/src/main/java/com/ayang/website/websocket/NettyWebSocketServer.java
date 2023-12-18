@@ -14,7 +14,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.NettyRuntime;
 import io.netty.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +84,8 @@ public class NettyWebSocketServer {
                            2. 这就是为什么当浏览器发送大量数据时，就会发出多次 http请求的原因
                          */
                         pipeline.addLast(new HttpObjectAggregator(8192));
+                        // 保存请求头
+                        pipeline.addLast(new MyHeaderCollectHandler());
                         //保存用户ip
 //                        pipeline.addLast(new HttpHeadersHandler());
                         /*

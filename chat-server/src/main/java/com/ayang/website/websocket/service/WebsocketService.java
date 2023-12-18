@@ -17,11 +17,13 @@ public interface WebsocketService {
     /**
      * 登录认证
      */
-    void hanlerLoginReq(Channel channel);
+    void handlerLoginReq(Channel channel);
 
     void remove(Channel channel);
 
-    void scanLoginSussecc(Integer code, Long id);
+    void scanLoginSuccess(Integer code, Long id);
 
     void waitAuthorize(Integer code);
+
+    void authorize(Channel channel, String token);
 }
