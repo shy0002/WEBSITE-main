@@ -6,15 +6,13 @@ import com.ayang.website.websocket.domain.enums.WebsocketReqTypeEnum;
 import com.ayang.website.websocket.domain.vo.req.WebsocketBaseReq;
 import com.ayang.website.websocket.service.WebsocketService;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler.*;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.Attribute;
-import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
