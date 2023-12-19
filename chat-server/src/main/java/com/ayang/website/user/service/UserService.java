@@ -1,8 +1,6 @@
 package com.ayang.website.user.service;
 
 import com.ayang.website.user.domain.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -12,7 +10,7 @@ import org.springframework.stereotype.Service;
  * @author shy
  * @since 2023-12-05
  */
-public interface UserService{
+public interface UserService {
 
     Long register(User insert);
 }

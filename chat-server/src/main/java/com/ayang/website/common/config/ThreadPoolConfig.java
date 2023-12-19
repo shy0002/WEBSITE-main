@@ -22,11 +22,11 @@ public class ThreadPoolConfig implements AsyncConfigurer {
     /**
      * 项目公共线程池
      */
-    public static final String CHAT_EXECUTOR="chatExecutor";
+    public static final String CHAT_EXECUTOR = "chatExecutor";
     /**
      * websocket通信线程池
      */
-    public static final String WEBSOCKET_EXECUTOR="websocketExecutor";
+    public static final String WEBSOCKET_EXECUTOR = "websocketExecutor";
 
     @Override
     public Executor getAsyncExecutor() {

@@ -3,7 +3,6 @@ package com.ayang.website.common.interceptor;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.ayang.website.common.domain.dto.RequestInfo;
 import com.ayang.website.common.utils.RequestHolder;
-import jdk.nashorn.internal.parser.Token;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

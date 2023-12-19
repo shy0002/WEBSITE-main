@@ -2,7 +2,6 @@ package com.ayang.website.user.dao;
 
 import com.ayang.website.user.domain.entity.UserBackpack;
 import com.ayang.website.user.mapper.UserBackpackMapper;
-import com.ayang.website.user.service.IUserBackpackService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

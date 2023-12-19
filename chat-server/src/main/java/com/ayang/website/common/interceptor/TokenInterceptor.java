@@ -30,13 +30,13 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = getToken(request);
         Long uid = loginService.getValidUid(token);
-        if(Objects.nonNull(uid)){
+        if (Objects.nonNull(uid)) {
             // 用户有登录态
             request.setAttribute(UID, uid);
-        }else {
+        } else {
             // 用户未登录
             boolean isPublicUri = isPublicUri(request);
-            if (!isPublicUri){
+            if (!isPublicUri) {
                 // 401
                 HttpErrorEnum.ACCESS_DENIED.sendHttpError(response);
                 return false;

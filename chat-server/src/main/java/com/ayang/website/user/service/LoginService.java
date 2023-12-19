@@ -18,12 +18,14 @@ public interface LoginService {
 
     /**
      * 登录成功，获取token
+     *
      * @return 返回token
      */
     String login(Long uid);
 
     /**
      * 如果token有效，返回uid
+     *
      * @return uid
      */
     Long getValidUid(String token);

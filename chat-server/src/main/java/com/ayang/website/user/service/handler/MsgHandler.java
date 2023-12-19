@@ -1,7 +1,6 @@
 package com.ayang.website.user.service.handler;
 
 import cn.hutool.json.JSONUtil;
-
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -21,7 +20,6 @@ import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
  */
 @Component
 public class MsgHandler extends AbstractHandler {
-
 
 
     @Override

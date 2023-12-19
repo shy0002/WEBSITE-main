@@ -10,7 +10,7 @@ import lombok.Data;
  * @description UserInfoResp
  */
 @Data
-@ApiModel(value="UserInfoResp对象", description="用户信息返回")
+@ApiModel(value = "UserInfoResp对象", description = "用户信息返回")
 public class UserInfoResp {
 
     @ApiModelProperty(value = "uid")

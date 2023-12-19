@@ -9,13 +9,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ThreadUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-    private static final ThreadUncaughtExceptionHandler instance= new ThreadUncaughtExceptionHandler();
+    private static final ThreadUncaughtExceptionHandler instance = new ThreadUncaughtExceptionHandler();
+
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-      log.error("Exception in thread {} ", t.getName(), e);
+        log.error("Exception in thread {} ", t.getName(), e);
     }
 
-    public static ThreadUncaughtExceptionHandler getInstance(){
+    public static ThreadUncaughtExceptionHandler getInstance() {
         return instance;
     }
 }

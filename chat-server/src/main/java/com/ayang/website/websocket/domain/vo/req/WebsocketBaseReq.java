@@ -10,6 +10,7 @@ import lombok.Data;
 public class WebsocketBaseReq {
     /**
      * 数据类型
+     *
      * @see com.ayang.website.websocket.domain.enums.WebsocketReqTypeEnum
      */
     private Integer type;

@@ -7,13 +7,10 @@ import com.ayang.website.user.service.handler.MsgHandler;
 import com.ayang.website.user.service.handler.ScanHandler;
 import com.ayang.website.user.service.handler.SubscribeHandler;
 import lombok.AllArgsConstructor;
-
-import lombok.RequiredArgsConstructor;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,16 +46,16 @@ public class WxMpConfiguration {
 
         WxMpService service = new WxMpServiceImpl();
         service.setMultiConfigStorages(configs
-                                       .stream().map(a -> {
-                                           WxMpDefaultConfigImpl configStorage;
-                                           configStorage = new WxMpDefaultConfigImpl();
+                .stream().map(a -> {
+                    WxMpDefaultConfigImpl configStorage;
+                    configStorage = new WxMpDefaultConfigImpl();
 
-                                           configStorage.setAppId(a.getAppId());
-                                           configStorage.setSecret(a.getSecret());
-                                           configStorage.setToken(a.getToken());
-                                           configStorage.setAesKey(a.getAesKey());
-                                           return configStorage;
-                                       }).collect(Collectors.toMap(WxMpDefaultConfigImpl::getAppId, a -> a, (o, n) -> o)));
+                    configStorage.setAppId(a.getAppId());
+                    configStorage.setSecret(a.getSecret());
+                    configStorage.setToken(a.getToken());
+                    configStorage.setAesKey(a.getAesKey());
+                    return configStorage;
+                }).collect(Collectors.toMap(WxMpDefaultConfigImpl::getAppId, a -> a, (o, n) -> o)));
         return service;
     }
 

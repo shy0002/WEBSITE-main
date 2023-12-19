@@ -2,9 +2,9 @@ package com.ayang.website.websocket.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
-import com.ayang.website.user.service.LoginService;
 import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
+import com.ayang.website.user.service.LoginService;
 import com.ayang.website.websocket.domain.dto.WebsocketChannelExtraDTO;
 import com.ayang.website.websocket.domain.vo.resp.WebsocketBaseResp;
 import com.ayang.website.websocket.service.WebsocketService;
@@ -17,8 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
