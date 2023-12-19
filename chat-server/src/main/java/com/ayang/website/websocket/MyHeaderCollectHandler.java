@@ -28,6 +28,5 @@ public class MyHeaderCollectHandler extends ChannelInboundHandlerAdapter {
             req.setUri(urlBuilder.getPathStr());
         }
         ctx.fireChannelRead(msg);
-
     }
 }

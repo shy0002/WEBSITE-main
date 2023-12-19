@@ -32,6 +32,6 @@ public class DaoTest {
     @Test
     public void redis(){
         RedisUtils.set("name", "阿洋努力修炼");
-        System.out.println(RedisUtils.get("name"));
+        System.out.println(RedisUtils.getStr("name"));
     }
 }

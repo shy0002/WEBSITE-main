@@ -13,6 +13,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
@@ -30,14 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description websocket逻辑管理
  */
 @Service
+@AllArgsConstructor
 public class WebsocketServiceImpl implements WebsocketService {
-    @Autowired
-    @Lazy
-    private WxMpService wxMpService;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private LoginService loginService;
+
+    private final WxMpService wxMpService;
+    private final UserDao userDao;
+    private final LoginService loginService;
     /**
      * 在线用户连接管理(包括登录态/游客)
      */
