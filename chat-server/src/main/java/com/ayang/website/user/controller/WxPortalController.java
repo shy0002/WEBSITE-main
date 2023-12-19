@@ -1,7 +1,7 @@
 package com.ayang.website.user.controller;
 
 import com.ayang.website.user.service.WxMsgService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
@@ -12,7 +12,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -23,19 +22,15 @@ import org.springframework.web.servlet.view.RedirectView;
  * @description 微信api交互接口
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("wx/portal/public")
 public class WxPortalController {
 
-    @Autowired
-    private WxMpService wxMpService;
-    @Autowired
-    private WxMpService wxService;
-    @Autowired
-    private WxMpMessageRouter messageRouter;
-    @Autowired
-    private WxMsgService wxMsgService;
+    private final WxMpService wxMpService;
+    private final WxMpService wxService;
+    private final WxMpMessageRouter messageRouter;
+    private final WxMsgService wxMsgService;
 
 
     @GetMapping("/test")
@@ -54,7 +49,7 @@ public class WxPortalController {
                           @RequestParam(name = "echostr", required = false) String echostr) {
 
         log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature,
-                 timestamp, nonce, echostr);
+                timestamp, nonce, echostr);
         if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
         }
@@ -84,48 +79,48 @@ public class WxPortalController {
                        @RequestParam("openid") String openid,
                        @RequestParam(name = "encrypt_type", required = false) String encType,
                        @RequestParam(name = "msg_signature", required = false) String msgSignature) {
-                                     log.info("\n接收微信请求：[openid=[{}], [signature=[{}], encType=[{}], msgSignature=[{}],"
-                                     + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-                                     openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
+        log.info("\n接收微信请求：[openid=[{}], [signature=[{}], encType=[{}], msgSignature=[{}],"
+                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+                openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-                                     if (!wxService.checkSignature(timestamp, nonce, signature)) {
-                                     throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
-                                     }
+        if (!wxService.checkSignature(timestamp, nonce, signature)) {
+            throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
+        }
 
-                                     String out = null;
-                                     if (encType == null) {
-                                     // 明文传输的消息
-                                     WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
-                                     WxMpXmlOutMessage outMessage = this.route(inMessage);
-                                     if (outMessage == null) {
-                                     return "";
-                                     }
+        String out = null;
+        if (encType == null) {
+            // 明文传输的消息
+            WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
+            WxMpXmlOutMessage outMessage = this.route(inMessage);
+            if (outMessage == null) {
+                return "";
+            }
 
-                                     out = outMessage.toXml();
-                                     } else if ("aes".equalsIgnoreCase(encType)) {
-                                     // aes加密的消息
-                                     WxMpXmlMessage inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxService.getWxMpConfigStorage(),
-                                     timestamp, nonce, msgSignature);
-                                     log.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
-                                     WxMpXmlOutMessage outMessage = this.route(inMessage);
-                                     if (outMessage == null) {
-                                     return "";
-                                     }
+            out = outMessage.toXml();
+        } else if ("aes".equalsIgnoreCase(encType)) {
+            // aes加密的消息
+            WxMpXmlMessage inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxService.getWxMpConfigStorage(),
+                    timestamp, nonce, msgSignature);
+            log.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
+            WxMpXmlOutMessage outMessage = this.route(inMessage);
+            if (outMessage == null) {
+                return "";
+            }
 
-                                     out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
-                                     }
+            out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
+        }
 
-                                     log.debug("\n组装回复信息：{}", out);
-                                     return out;
-                                     }
+        log.debug("\n组装回复信息：{}", out);
+        return out;
+    }
 
-                                     private WxMpXmlOutMessage route(WxMpXmlMessage message) {
-                                     try {
-                                     return this.messageRouter.route(message);
-                                     } catch (Exception e) {
-                                     log.error("路由消息时出现异常！", e);
-                                     }
+    private WxMpXmlOutMessage route(WxMpXmlMessage message) {
+        try {
+            return this.messageRouter.route(message);
+        } catch (Exception e) {
+            log.error("路由消息时出现异常！", e);
+        }
 
-                                     return null;
-                                     }
-                                     }
+        return null;
+    }
+}

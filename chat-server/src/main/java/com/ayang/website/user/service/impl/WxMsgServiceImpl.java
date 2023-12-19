@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Slf4j
 public class WxMsgServiceImpl implements WxMsgService {
+
     /**
      * openid和登录code的关系map
      */
@@ -41,35 +42,37 @@ public class WxMsgServiceImpl implements WxMsgService {
     public static final String URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 
 
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    @Lazy
-    private WxMpService wxMpService;
-    @Autowired
-    private WebsocketService websocketService;
+    private final UserDao userDao;
+    private final UserService userService;
+    private final WebsocketService websocketService;
 
+    @Autowired
+    public WxMsgServiceImpl(UserDao userDao,
+                            UserService userService,
+                            @Lazy WebsocketService websocketService) {
+        this.userDao = userDao;
+        this.userService = userService;
+        this.websocketService = websocketService;
+    }
 
     @Override
-    public WxMpXmlOutMessage scan(WxMpXmlMessage wxMpXmlMessage) {
+    public WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage) {
         String openId = wxMpXmlMessage.getFromUser();
         Integer code = getEventKey(wxMpXmlMessage);
-        if (Objects.isNull(code)){
+        if (Objects.isNull(code)) {
             return null;
         }
         User user = userDao.getByOpenId(openId);
         boolean registered = Objects.nonNull(user);
         boolean authorized = registered && StringUtils.isNotBlank(user.getAvatar());
         // 用户已经注册并授权
-        if (registered && authorized){
+        if (registered && authorized) {
             // todo 走登录成功逻辑 通过code找到channel，然后给channel推送消息
             websocketService.scanLoginSuccess(code, user.getId());
             return null;
         }
         // 用户未注册，先注册
-        if (!registered){
+        if (!registered) {
             User insert = UserAdapter.buildUserSave(openId);
             userService.register(insert);
         }
@@ -77,7 +80,7 @@ public class WxMsgServiceImpl implements WxMsgService {
         WAIT_AUTHORIZE_MAP.put(openId, code);
         websocketService.waitAuthorize(code);
         String authorizeUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "/wx/portal/public/callBack"));
-        return TextBuilder.build("请点击登录：<a href=\"" + authorizeUrl + "\">登录</a>"  ,wxMpXmlMessage);
+        return TextBuilder.build("请点击登录：<a href=\"" + authorizeUrl + "\">登录</a>", wxMpXmlMessage);
     }
 
     @Override
@@ -85,7 +88,7 @@ public class WxMsgServiceImpl implements WxMsgService {
         String openid = userInfo.getOpenid();
         User user = userDao.getByOpenId(openid);
         // 更新用户信息
-        if (StringUtils.isBlank(user.getAvatar())){
+        if (StringUtils.isBlank(user.getAvatar())) {
             fillUserInfo(user.getId(), userInfo);
         }
         // 通过code找到用户的channel进行登录

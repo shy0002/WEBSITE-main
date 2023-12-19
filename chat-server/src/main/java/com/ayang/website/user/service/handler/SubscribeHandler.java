@@ -2,12 +2,12 @@ package com.ayang.website.user.service.handler;
 
 import com.ayang.website.user.service.WxMsgService;
 import com.ayang.website.user.service.adapter.TextBuilder;
+import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -18,20 +18,20 @@ import java.util.Map;
  * @description
  */
 @Component
+@AllArgsConstructor
 public class SubscribeHandler extends AbstractHandler {
 
-    @Autowired
-    private WxMsgService wxMsgService;
+    private final WxMsgService wxMsgService;
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
-                                    Map<String, Object> context, WxMpService weixinService,
+                                    Map<String, Object> context, WxMpService wsxService,
                                     WxSessionManager sessionManager) throws WxErrorException {
 
         this.logger.info("新关注用户 OPENID: " + wxMessage.getFromUser());
         WxMpXmlOutMessage responseResult = null;
         try {
-            responseResult = wxMsgService.scan(wxMessage);
+            responseResult = wxMsgService.scan(wsxService, wxMessage);
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }

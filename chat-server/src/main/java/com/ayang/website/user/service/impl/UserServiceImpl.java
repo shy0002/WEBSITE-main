@@ -3,7 +3,7 @@ package com.ayang.website.user.service.impl;
 import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
  * @description UserServiceImpl
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
     @Override
     @Transactional
     public Long register(User insert) {
