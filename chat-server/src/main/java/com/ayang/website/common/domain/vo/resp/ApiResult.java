@@ -1,5 +1,6 @@
 package com.ayang.website.common.domain.vo.resp;
 
+import com.ayang.website.common.exception.ErrorEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,6 +41,14 @@ public class ApiResult<T> {
         result.setSuccess(Boolean.FALSE);
         result.setErrCode(code);
         result.setErrMsg(msg);
+        return result;
+    }
+
+    public static <T> ApiResult<T> fail(ErrorEnum error) {
+        ApiResult<T> result = new ApiResult<T>();
+        result.setSuccess(Boolean.FALSE);
+        result.setErrCode(error.getErrorCode());
+        result.setErrMsg(error.getErrorMsg());
         return result;
     }
 
