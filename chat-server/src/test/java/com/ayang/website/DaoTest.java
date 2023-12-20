@@ -3,7 +3,10 @@ package com.ayang.website;
 
 import com.ayang.website.common.utils.JwtUtils;
 import com.ayang.website.common.utils.RedisUtils;
+import com.ayang.website.user.domain.enums.IdempotentEnum;
+import com.ayang.website.user.domain.enums.ItemEnum;
 import com.ayang.website.user.service.LoginService;
+import com.ayang.website.user.service.UserBackpackService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class DaoTest {
 
+    public static final long UID = 2001L;
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
@@ -34,7 +38,14 @@ public class DaoTest {
 
     @Test
     public void redis(){
-        String token = loginService.login(2001L);
+        String token = loginService.login(UID);
         System.out.printf(token);
+    }
+
+    @Autowired
+    private UserBackpackService userBackpackService;
+    @Test
+    public void acquireItem(){
+        userBackpackService.acquireItem(UID, ItemEnum.PLANET.getId(), IdempotentEnum.UID, UID +"");
     }
 }
