@@ -3,6 +3,7 @@ package com.ayang.website;
 
 import com.ayang.website.common.utils.JwtUtils;
 import com.ayang.website.common.utils.RedisUtils;
+import com.ayang.website.user.service.LoginService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class DaoTest {
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private LoginService loginService;
 
     @Test
     public void jwt(){
@@ -31,7 +34,7 @@ public class DaoTest {
 
     @Test
     public void redis(){
-        RedisUtils.set("name", "阿洋努力修炼");
-        System.out.println(RedisUtils.getStr("name"));
+        String token = loginService.login(2001L);
+        System.out.printf(token);
     }
 }
