@@ -46,7 +46,7 @@ public class ItemConfig implements Serializable {
      * 物品功能描述
      */
     @TableField("describe")
-    private String describe;
+    private String desc;
 
     /**
      * 创建时间
