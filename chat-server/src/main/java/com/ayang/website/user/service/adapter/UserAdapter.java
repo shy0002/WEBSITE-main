@@ -1,6 +1,8 @@
 package com.ayang.website.user.service.adapter;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.ayang.website.user.domain.entity.User;
+import com.ayang.website.user.domain.vo.resp.UserInfoResp;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 
 /**
@@ -20,5 +22,12 @@ public class UserAdapter {
         user.setAvatar(userInfo.getHeadImgUrl());
         user.setSex(userInfo.getSex());
         return user;
+    }
+
+    public static UserInfoResp buildUserInfo(User user, Integer modifyNameCount) {
+        UserInfoResp vo = new UserInfoResp();
+        BeanUtil.copyProperties(user, vo);
+        vo.setModifyNameChance(modifyNameCount);
+        return vo;
     }
 }
