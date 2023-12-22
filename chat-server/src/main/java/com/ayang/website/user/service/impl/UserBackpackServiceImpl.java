@@ -1,6 +1,7 @@
 package com.ayang.website.user.service.impl;
 
 import com.ayang.website.common.domain.enums.YesOrNoEnum;
+import com.ayang.website.common.service.LockService;
 import com.ayang.website.common.utils.AssertUtil;
 import com.ayang.website.user.dao.UserBackpackDao;
 import com.ayang.website.user.domain.entity.UserBackpack;
@@ -21,16 +22,13 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class UserBackpackServiceImpl implements UserBackpackService {
-    private final RedissonClient redissonClient;
+    private final LockService lockService;
     private final UserBackpackDao userBackpackDao;
 
     @Override
     public void acquireItem(Long uid, Long itemId, IdempotentEnum idempotentEnum, String businessId) {
         String idempotent = getIdempotent(itemId, idempotentEnum, businessId);
-        RLock lock = redissonClient.getLock("acquireItem" + idempotent);
-        boolean b = lock.tryLock();
-        AssertUtil.isTrue(b, "请求太频繁了");
-        try {
+        lockService.executeWithLock("acquireItem" + idempotent, () ->{
             UserBackpack userBackpack = userBackpackDao.getByIdempotent(idempotent);
             if (Objects.nonNull(userBackpack)) {
                 return;
@@ -43,9 +41,7 @@ public class UserBackpackServiceImpl implements UserBackpackService {
                     .idempotent(idempotent)
                     .build();
             userBackpackDao.save(insert);
-        } finally {
-            lock.unlock();
-        }
+        });
     }
 
     private String getIdempotent(Long itemId, IdempotentEnum idempotentEnum, String businessId) {

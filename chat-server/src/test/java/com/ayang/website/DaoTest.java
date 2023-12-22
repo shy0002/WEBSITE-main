@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Random;
+
 /**
  * @author shy
  * @date 2023/12/5
@@ -46,6 +48,19 @@ public class DaoTest {
     private UserBackpackService userBackpackService;
     @Test
     public void acquireItem(){
-        userBackpackService.acquireItem(UID, ItemEnum.PLANET.getId(), IdempotentEnum.UID, UID +"");
+        userBackpackService.acquireItem(UID, ItemEnum.REG_TOP10_BADGE.getId(), IdempotentEnum.UID, UID +"");
+    }
+
+    @Test
+    public void getRandomNum(){
+
+        for (int j = 0; j < 12; j++) {
+            Random random = new Random();
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < 6; i++) {
+                res.append(random.nextInt(10));
+            }
+            System.out.println(res);
+        }
     }
 }
