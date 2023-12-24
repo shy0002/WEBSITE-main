@@ -4,6 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author shy
@@ -15,20 +17,22 @@ import java.lang.annotation.Target;
 public @interface RedissonLock {
     /**
      * key的前缀，默认取方法全限定名，也可以自己执行
-     * @return
      */
     String prefixKey() default "";
 
     /**
      * 支持springEl表达式的key
-     * @return
      */
     String key();
 
     /**
      * 等待申请的排队时间，默认快速失败
-     * @return
      */
     int waitTime() default -1;
+
+    /**
+     * 时间单位，默认毫秒
+     */
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
 
 }

@@ -9,7 +9,6 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * @author shy
@@ -22,24 +21,37 @@ public class LockService {
     private final RedissonClient redissonClient;
 
     @SneakyThrows
-    public <T> T executeWithLock(String key, int waitTime, TimeUnit timeUnit, Supplier<T> supplier){
+    public <T> T executeWithLock(String key, int waitTime, TimeUnit timeUnit, Supplier<T> supplier) {
         RLock lock = redissonClient.getLock(key);
         boolean success = lock.tryLock(waitTime, timeUnit);
-        if (!success){
+        if (!success) {
             throw new BusinessException(CommonErrorEnum.LOCK_LIMIT);
         }
         try {
             return supplier.get();
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
 
 
-    public <T> T executeWithLock(String key, Runnable runnable){
-        return executeWithLock(key, -1, TimeUnit.MILLISECONDS, () ->{
+    public <T> T executeWithLock(String key, Runnable runnable) {
+        return executeWithLock(key, -1, TimeUnit.MILLISECONDS, () -> {
             runnable.run();
             return null;
         });
     }
+
+
+    @FunctionalInterface
+    public interface Supplier<T> {
+
+        /**
+         * Gets a result.
+         *
+         * @return a result
+         */
+        T get() throws Throwable;
+    }
+
 }

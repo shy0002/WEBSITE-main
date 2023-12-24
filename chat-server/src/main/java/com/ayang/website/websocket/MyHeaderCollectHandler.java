@@ -15,17 +15,19 @@ import java.util.Optional;
 public class MyHeaderCollectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        HttpObject httpObject = (HttpObject) msg;
-        if (httpObject instanceof HttpRequest) {
-            HttpRequest req = (HttpRequest) httpObject;
-            UrlBuilder urlBuilder = UrlBuilder.ofHttp(req.uri());
-            Optional<String> tokenOptional = Optional.of(urlBuilder)
-                    .map(UrlBuilder::getQuery)
-                    .map(k -> k.get("token"))
-                    .map(CharSequence::toString);
+        if (msg instanceof HttpObject) {
+            HttpObject httpObject = (HttpObject) msg;
+            if (httpObject instanceof HttpRequest) {
+                HttpRequest req = (HttpRequest) httpObject;
+                UrlBuilder urlBuilder = UrlBuilder.ofHttp(req.uri());
+                Optional<String> tokenOptional = Optional.of(urlBuilder)
+                        .map(UrlBuilder::getQuery)
+                        .map(k -> k.get("token"))
+                        .map(CharSequence::toString);
 
-            tokenOptional.ifPresent(s -> NettyUtil.setAttr(ctx.channel(), NettyUtil.TOKEN, s));
-            req.setUri(urlBuilder.getPathStr());
+                tokenOptional.ifPresent(s -> NettyUtil.setAttr(ctx.channel(), NettyUtil.TOKEN, s));
+                req.setUri(urlBuilder.getPathStr());
+            }
         }
         ctx.fireChannelRead(msg);
     }

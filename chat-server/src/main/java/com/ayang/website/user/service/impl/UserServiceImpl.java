@@ -1,5 +1,7 @@
 package com.ayang.website.user.service.impl;
 
+import com.ayang.website.common.annotaion.RedissonLock;
+import com.ayang.website.common.event.UserRegisterEvent;
 import com.ayang.website.common.utils.AssertUtil;
 import com.ayang.website.user.dao.ItemConfigDao;
 import com.ayang.website.user.dao.UserBackpackDao;
@@ -15,9 +17,11 @@ import com.ayang.website.user.service.UserService;
 import com.ayang.website.user.service.adapter.UserAdapter;
 import com.ayang.website.user.service.cache.ItemCache;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Key;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +37,15 @@ public class UserServiceImpl implements UserService {
     private final UserBackpackDao userBackpackDao;
     private final ItemCache itemCache;
     private final ItemConfigDao itemConfigDao;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long register(User user) {
-        userDao.save(user);
-        // todo 用户注册的事件
-        return user.getId();
+    public Long register(User insert) {
+        userDao.save(insert);
+        // 用户注册的事件
+        applicationEventPublisher.publishEvent(new UserRegisterEvent(this, insert));
+        return insert.getId();
     }
 
     @Override

@@ -23,6 +23,13 @@ spring:
     timeout: 1800000
     # 设置密码
     password: ${chat.redis.password}
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 5
+        min-idle: 0
+        shutdown-timeout: 100
   jackson:
     serialization:
       write-dates-as-timestamps: true
