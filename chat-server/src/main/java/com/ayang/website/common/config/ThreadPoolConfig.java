@@ -45,4 +45,16 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         executor.setThreadFactory(new MyThreadFactory(executor));
         return null;
     }
+
+    @Bean(WEBSOCKET_EXECUTOR)
+    public ThreadPoolTaskExecutor websocketExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(16);
+        executor.setMaxPoolSize(16);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("websocket-executor-");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.setThreadFactory(new MyThreadFactory(executor));
+        return null;
+    }
 }

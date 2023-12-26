@@ -1,22 +1,28 @@
 package com.ayang.website.user.service.impl;
 
 import com.ayang.website.common.annotaion.RedissonLock;
+import com.ayang.website.common.event.UseBlackEvent;
 import com.ayang.website.common.event.UserRegisterEvent;
 import com.ayang.website.common.utils.AssertUtil;
+import com.ayang.website.user.dao.BlackDao;
 import com.ayang.website.user.dao.ItemConfigDao;
 import com.ayang.website.user.dao.UserBackpackDao;
 import com.ayang.website.user.dao.UserDao;
+import com.ayang.website.user.domain.entity.Black;
 import com.ayang.website.user.domain.entity.ItemConfig;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.user.domain.entity.UserBackpack;
+import com.ayang.website.user.domain.enums.BlackTypeEnum;
 import com.ayang.website.user.domain.enums.ItemEnum;
 import com.ayang.website.user.domain.enums.ItemTypeEnum;
+import com.ayang.website.user.domain.vo.req.BlackReq;
 import com.ayang.website.user.domain.vo.resp.BadgeResp;
 import com.ayang.website.user.domain.vo.resp.UserInfoResp;
 import com.ayang.website.user.service.UserService;
 import com.ayang.website.user.service.adapter.UserAdapter;
 import com.ayang.website.user.service.cache.ItemCache;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final ItemCache itemCache;
     private final ItemConfigDao itemConfigDao;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final BlackDao blackDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -92,5 +99,29 @@ public class UserServiceImpl implements UserService {
         AssertUtil.equal(itemConfig.getType(), ItemTypeEnum.BADGE.getType(), "只有徽章才能佩戴");
         // 佩戴徽章
         userDao.wearingBadge(uid, itemId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void black(BlackReq req) {
+        Long uid = req.getUid();
+        Black user = new Black();
+        user.setType(BlackTypeEnum.UID.getType());
+        user.setTarget(uid.toString());
+        blackDao.save(user);
+        User byId = userDao.getById(uid);
+        blackIp(byId.getIpInfo().getCreateIp());
+        blackIp(byId.getIpInfo().getUpdateIp());
+        applicationEventPublisher.publishEvent(new UseBlackEvent(this, byId));
+    }
+
+    private void blackIp(String ip) {
+        if (StringUtils.isBlank(ip)){
+            return;
+        }
+        Black insert = new Black();
+        insert.setType(BlackTypeEnum.IP.getType());
+        insert.setTarget(ip);
+        blackDao.save(insert);
     }
 }

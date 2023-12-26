@@ -2,10 +2,10 @@ package com.ayang.website.user.dao;
 
 import com.ayang.website.user.domain.entity.UserRole;
 import com.ayang.website.user.mapper.UserRoleMapper;
-import com.ayang.website.user.service.IUserRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +18,9 @@ import org.springframework.stereotype.Service;
 @Repository
 public class UserRoleDao extends ServiceImpl<UserRoleMapper, UserRole>{
 
+    public List<UserRole> listByUid(Long uid) {
+        return lambdaQuery()
+                .eq(UserRole::getUid, uid)
+                .list();
+    }
 }

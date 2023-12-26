@@ -1,5 +1,6 @@
 package com.ayang.website.websocket.service;
 
+import com.ayang.website.websocket.domain.vo.resp.WebsocketBaseResp;
 import io.netty.channel.Channel;
 
 /**
@@ -26,4 +27,6 @@ public interface WebsocketService {
     void waitAuthorize(Integer code);
 
     void authorize(Channel channel, String token);
+
+    void sendMsgToAll(WebsocketBaseResp<?> msg);
 }

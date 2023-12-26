@@ -4,8 +4,9 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.ayang.website.common.event.UserOnlineEvent;
 import com.ayang.website.user.dao.UserDao;
-import com.ayang.website.user.domain.entity.IpInfo;
 import com.ayang.website.user.domain.entity.User;
+import com.ayang.website.user.domain.enums.RoleEnum;
+import com.ayang.website.user.service.IRoleService;
 import com.ayang.website.user.service.LoginService;
 import com.ayang.website.websocket.NettyUtil;
 import com.ayang.website.websocket.domain.dto.WebsocketChannelExtraDTO;
@@ -16,11 +17,12 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -34,13 +36,31 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description websocket逻辑管理
  */
 @Service
-@AllArgsConstructor
 public class WebsocketServiceImpl implements WebsocketService {
 
     private final WxMpService wxMpService;
     private final UserDao userDao;
     private final LoginService loginService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final IRoleService iRoleService;
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+    @Autowired
+    public WebsocketServiceImpl(WxMpService wxMpService,
+                                UserDao userDao,
+                                LoginService loginService,
+                                ApplicationEventPublisher applicationEventPublisher,
+                                IRoleService iRoleService,
+                                ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+        this.wxMpService = wxMpService;
+        this.userDao = userDao;
+        this.loginService = loginService;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.iRoleService = iRoleService;
+        this.threadPoolTaskExecutor = threadPoolTaskExecutor;
+
+    }
+
     /**
      * 在线用户连接管理(包括登录态/游客)
      */
@@ -114,12 +134,19 @@ public class WebsocketServiceImpl implements WebsocketService {
         }
     }
 
+    @Override
+    public void sendMsgToAll(WebsocketBaseResp<?> msg) {
+        ONLINE_WS_MAP.forEach((channel, ext) -> {
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, msg));
+        });
+    }
+
     private void loginSuccess(Channel channel, User user, String token) {
         // 更新channel对应的用户信息
         WebsocketChannelExtraDTO websocketChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         websocketChannelExtraDTO.setUid(user.getId());
         // 推送用户登录成功的消息
-        sendMsg(channel, WebsocketAdapter.buildResp(user, token));
+        sendMsg(channel, WebsocketAdapter.buildResp(user, token, iRoleService.hasPower(user.getId(), RoleEnum.ADMIN)));
         // 用户上线成功的事件
         user.setLastOptTime(new Date());
         user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));

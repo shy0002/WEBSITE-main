@@ -1,6 +1,7 @@
 package com.ayang.website.user.service;
 
 import com.ayang.website.user.domain.entity.User;
+import com.ayang.website.user.domain.vo.req.BlackReq;
 import com.ayang.website.user.domain.vo.resp.BadgeResp;
 import com.ayang.website.user.domain.vo.resp.UserInfoResp;
 
@@ -55,4 +56,10 @@ public interface UserService {
      * @param itemId 徽章id
      */
     void wearingBadge(Long uid, Long itemId);
+
+    /**
+     * 拉黑用户
+     * @param req 拉黑请求体
+     */
+    void black(BlackReq req);
 }

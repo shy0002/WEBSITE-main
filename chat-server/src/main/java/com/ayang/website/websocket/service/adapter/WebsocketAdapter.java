@@ -1,8 +1,10 @@
 package com.ayang.website.websocket.service.adapter;
 
+import com.ayang.website.common.domain.enums.YesOrNoEnum;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.websocket.domain.enums.WebsocketRespTypeEnum;
 import com.ayang.website.websocket.domain.vo.resp.WebsocketBaseResp;
+import com.ayang.website.websocket.domain.vo.resp.WebsocketBlack;
 import com.ayang.website.websocket.domain.vo.resp.WebsocketLoginSuccess;
 import com.ayang.website.websocket.domain.vo.resp.WebsocketLoginUrl;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
@@ -20,7 +22,7 @@ public class WebsocketAdapter {
         return resp;
     }
 
-    public static WebsocketBaseResp<?> buildResp(User user, String token) {
+    public static WebsocketBaseResp<?> buildResp(User user, String token, boolean hasPower) {
         WebsocketBaseResp<WebsocketLoginSuccess> resp = new WebsocketBaseResp<>();
         resp.setType(WebsocketRespTypeEnum.LOGIN_SUCCESS.getType());
         WebsocketLoginSuccess loginSuccess = WebsocketLoginSuccess.builder()
@@ -28,6 +30,7 @@ public class WebsocketAdapter {
                 .name(user.getName())
                 .token(token)
                 .uid(user.getId())
+                .power(hasPower ? YesOrNoEnum.YES.getStatus() : YesOrNoEnum.NO.getStatus())
                 .build();
         resp.setDate(loginSuccess);
         return resp;
@@ -43,6 +46,16 @@ public class WebsocketAdapter {
     public static WebsocketBaseResp<?> buildInvalidTokenResp() {
         WebsocketBaseResp<WebsocketLoginUrl> resp = new WebsocketBaseResp<>();
         resp.setType(WebsocketRespTypeEnum.INVALIDATE_TOKEN.getType());
+        return resp;
+    }
+
+    public static WebsocketBaseResp<?> buildBlack(User user) {
+        WebsocketBaseResp<WebsocketBlack> resp = new WebsocketBaseResp<>();
+        resp.setType(WebsocketRespTypeEnum.BLACK.getType());
+        WebsocketBlack build = WebsocketBlack.builder()
+                .uid(user.getId())
+                .build();
+        resp.setDate(build);
         return resp;
     }
 }
