@@ -8,10 +8,7 @@ import com.ayang.website.user.dao.BlackDao;
 import com.ayang.website.user.dao.ItemConfigDao;
 import com.ayang.website.user.dao.UserBackpackDao;
 import com.ayang.website.user.dao.UserDao;
-import com.ayang.website.user.domain.entity.Black;
-import com.ayang.website.user.domain.entity.ItemConfig;
-import com.ayang.website.user.domain.entity.User;
-import com.ayang.website.user.domain.entity.UserBackpack;
+import com.ayang.website.user.domain.entity.*;
 import com.ayang.website.user.domain.enums.BlackTypeEnum;
 import com.ayang.website.user.domain.enums.ItemEnum;
 import com.ayang.website.user.domain.enums.ItemTypeEnum;
@@ -29,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -110,8 +108,8 @@ public class UserServiceImpl implements UserService {
         user.setTarget(uid.toString());
         blackDao.save(user);
         User byId = userDao.getById(uid);
-        blackIp(byId.getIpInfo().getCreateIp());
-        blackIp(byId.getIpInfo().getUpdateIp());
+        blackIp(Optional.ofNullable(byId.getIpInfo()).map(IpInfo::getCreateIp).orElse(null));
+        blackIp(Optional.ofNullable(byId.getIpInfo()).map(IpInfo::getUpdateIp).orElse(null));
         applicationEventPublisher.publishEvent(new UseBlackEvent(this, byId));
     }
 
