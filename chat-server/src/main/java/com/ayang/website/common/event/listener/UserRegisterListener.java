@@ -1,4 +1,4 @@
-package com.ayang.website.common.listener;
+package com.ayang.website.common.event.listener;
 
 import com.ayang.website.common.event.UserRegisterEvent;
 import com.ayang.website.user.dao.UserDao;

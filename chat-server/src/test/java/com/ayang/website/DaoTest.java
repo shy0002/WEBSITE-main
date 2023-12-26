@@ -2,7 +2,6 @@ package com.ayang.website;
 
 
 import com.ayang.website.common.utils.JwtUtils;
-import com.ayang.website.common.utils.RedisUtils;
 import com.ayang.website.user.domain.enums.IdempotentEnum;
 import com.ayang.website.user.domain.enums.ItemEnum;
 import com.ayang.website.user.service.LoginService;
