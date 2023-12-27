@@ -1,5 +1,6 @@
 package com.ayang.website.user.service.impl;
 
+import cn.hutool.log.Log;
 import com.ayang.website.common.annotaion.RedissonLock;
 import com.ayang.website.common.event.UseBlackEvent;
 import com.ayang.website.common.event.UserRegisterEvent;
@@ -19,6 +20,7 @@ import com.ayang.website.user.service.UserService;
 import com.ayang.website.user.service.adapter.UserAdapter;
 import com.ayang.website.user.service.cache.ItemCache;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final UserBackpackDao userBackpackDao;
@@ -117,9 +120,14 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(ip)){
             return;
         }
-        Black insert = new Black();
-        insert.setType(BlackTypeEnum.IP.getType());
-        insert.setTarget(ip);
-        blackDao.save(insert);
+        try {
+            Black insert = new Black();
+            insert.setType(BlackTypeEnum.IP.getType());
+            insert.setTarget(ip);
+            blackDao.save(insert);
+        }catch (Exception e){
+            log.error("ip已经拉黑");
+        }
+
     }
 }

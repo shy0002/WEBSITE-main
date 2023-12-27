@@ -6,6 +6,7 @@ import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
 import com.ayang.website.user.domain.enums.UserActiveStatusEnum;
 import com.ayang.website.user.service.IpService;
+import com.ayang.website.user.service.cache.UserCache;
 import com.ayang.website.websocket.service.WebsocketService;
 import com.ayang.website.websocket.service.adapter.WebsocketAdapter;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class UserBlackListener {
 
     private final UserDao userDao;
     private final WebsocketService websocketService;
+    private final UserCache userCache;
 
     @Async
     @TransactionalEventListener(classes = UseBlackEvent.class, phase = TransactionPhase.AFTER_COMMIT)
@@ -37,6 +39,12 @@ public class UserBlackListener {
     @TransactionalEventListener(classes = UseBlackEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void changeUserStatus(UseBlackEvent event) {
         userDao.invalidUid(event.getUser().getId());
+    }
+
+    @Async
+    @TransactionalEventListener(classes = UseBlackEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void evictCache(UseBlackEvent event) {
+        userCache.evictBlackMap();
     }
 
 }
