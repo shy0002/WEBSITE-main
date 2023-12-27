@@ -1,7 +1,5 @@
 package com.ayang.website.user.service.impl;
 
-import cn.hutool.log.Log;
-import com.ayang.website.common.annotaion.RedissonLock;
 import com.ayang.website.common.event.UseBlackEvent;
 import com.ayang.website.common.event.UserRegisterEvent;
 import com.ayang.website.common.utils.AssertUtil;
@@ -26,7 +24,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Key;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,7 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void blackIp(String ip) {
-        if (StringUtils.isBlank(ip)){
+        if (StringUtils.isBlank(ip)) {
             return;
         }
         try {
@@ -125,9 +122,8 @@ public class UserServiceImpl implements UserService {
             insert.setType(BlackTypeEnum.IP.getType());
             insert.setTarget(ip);
             blackDao.save(insert);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("ip已经拉黑");
         }
-
     }
 }
