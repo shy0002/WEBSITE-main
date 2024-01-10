@@ -43,7 +43,8 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix("chat-executor-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setThreadFactory(new MyThreadFactory(executor));
-        return null;
+        executor.initialize();
+        return executor;
     }
 
     @Bean(WEBSOCKET_EXECUTOR)
@@ -55,6 +56,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix("websocket-executor-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         executor.setThreadFactory(new MyThreadFactory(executor));
-        return null;
+        executor.initialize();
+        return executor;
     }
 }

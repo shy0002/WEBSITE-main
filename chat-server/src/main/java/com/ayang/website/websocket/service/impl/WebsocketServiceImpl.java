@@ -2,6 +2,7 @@ package com.ayang.website.websocket.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
+import com.ayang.website.common.config.ThreadPoolConfig;
 import com.ayang.website.common.event.UserOnlineEvent;
 import com.ayang.website.user.dao.UserDao;
 import com.ayang.website.user.domain.entity.User;
@@ -21,6 +22,7 @@ import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -51,7 +53,7 @@ public class WebsocketServiceImpl implements WebsocketService {
                                 LoginService loginService,
                                 ApplicationEventPublisher applicationEventPublisher,
                                 IRoleService iRoleService,
-                                ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+                                @Qualifier(ThreadPoolConfig.WEBSOCKET_EXECUTOR) ThreadPoolTaskExecutor threadPoolTaskExecutor) {
         this.wxMpService = wxMpService;
         this.userDao = userDao;
         this.loginService = loginService;
