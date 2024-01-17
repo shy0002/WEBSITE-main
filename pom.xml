@@ -12,6 +12,7 @@
         <module>chat-server</module>
         <module>common-lib</module>
         <module>blockchain-server</module>
+        <module>hm-review-server</module>
     </modules>
 
     <parent>
